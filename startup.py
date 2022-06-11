@@ -3,9 +3,12 @@ import time
 import subprocess
 import io
 
+import config
+
 
 names = []
-home = "../home/"
+home = config.bot_directory
+main_file = config.main
 
 
 def wait(sec):
@@ -24,7 +27,7 @@ def run(path):
 
     os.system(f"tmux new -d -s '{session_name}'")
     os.system(f"tmux send-keys 'cd {path}' C-m")
-    os.system(f"tmux send-keys 'python3 main.py' C-m")
+    os.system(f"tmux send-keys 'python3 {main_file}' C-m")
     names.append(session_name)
 
 
@@ -32,10 +35,10 @@ def iterate_folders():
     print("Starting new sessions...")
 
     for dir1 in os.listdir(home):
-        if "main.py" not in os.listdir(home + dir1):
+        if main_file not in os.listdir(home + dir1):
             print(f"Info: Detected {dir1} as subfolder")
             for dir2 in os.listdir(home + dir1):  # subfolder
-                if "main.py" not in os.listdir(home + dir1 + "/" + dir2):
+                if main_file not in os.listdir(home + dir1 + "/" + dir2):
                     print(f"Warning: Detected empty subfolder: {dir1}/{dir2}")
                 else:
                     run(dir1 + "/" + dir2)

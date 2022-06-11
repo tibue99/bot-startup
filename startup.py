@@ -1,7 +1,7 @@
 import os
+import io
 import time
 import subprocess
-import io
 
 import config
 
@@ -22,8 +22,10 @@ def kill_sessions():
     os.system("tmux kill-server")
 
 
-def run(path):
+def run(path, subdir=None):
     session_name = path.split("/")[-1]
+    if subdir is not None:
+        session_name = f"{subdir[0]}_{session_name}"
 
     os.system(f"tmux new -d -s '{session_name}'")
     os.system(f"tmux send-keys 'cd {path}' C-m")
@@ -31,17 +33,17 @@ def run(path):
     names.append(session_name)
 
 
-def iterate_folders():
+def iterate_directory():
     print("Starting new sessions...")
 
     for dir1 in os.listdir(home):
         if main_file not in os.listdir(home + dir1):
-            print(f"Info: Detected {dir1} as subfolder")
-            for dir2 in os.listdir(home + dir1):  # subfolder
+            print(f"Info: Detected {dir1} as subdirectory")
+            for dir2 in os.listdir(home + dir1):
                 if main_file not in os.listdir(home + dir1 + "/" + dir2):
-                    print(f"Warning: Detected empty subfolder: {dir1}/{dir2}")
+                    print(f"Warning: Detected empty subdirectory: {dir1}/{dir2}")
                 else:
-                    run(dir1 + "/" + dir2)
+                    run(dir1 + "/" + dir2, dir1)
         else:
             run(dir1)
 
@@ -71,7 +73,7 @@ if __name__ == "__main__":
     kill_sessions()
     wait(2)
 
-    iterate_folders()
+    iterate_directory()
     wait(3)
 
     check_success()

@@ -34,14 +34,14 @@ def run(path, subdir=None):
 
 
 def iterate_directory():
-    print("Starting new sessions...")
+    print("Starting new sessions...\n")
 
     for dir1 in os.listdir(home):
         if main_file not in os.listdir(home + dir1):
             print(f"Info: Detected {dir1} as subdirectory")
             for dir2 in os.listdir(home + dir1):
                 if main_file not in os.listdir(home + dir1 + "/" + dir2):
-                    print(f"Warning: Detected empty subdirectory: {dir1}/{dir2}")
+                    print(f"Warning: Detected directory without main file: {dir1}/{dir2}")
                 else:
                     run(dir1 + "/" + dir2, dir1)
         else:
@@ -49,24 +49,24 @@ def iterate_directory():
 
 
 def check_success():
-    print("Checking success...")
+    print("Checking sessions...\n")
     for name in names:
         found_result = False
         result = subprocess.run(['tmux', 'capture-pane', '-pt', name, '-S', '3', '-E', '10'], stdout=subprocess.PIPE)
         output = result.stdout.decode('utf-8')
         for line in io.StringIO(output):
+            line = line.split("\n")[0]
             if "Error" in line:
-                error = line.split("\n")[0]
-                print(f"Error ({name}): {error}")
+                print(f"Error ({name}): {line}")
                 found_result = True
                 break
             elif "online" in line:
-                print(f"Success:", line)
+                print(f"Success ({name}):", line)
                 found_result = True
                 break
 
         if not found_result:
-            print(f"Error ({name}): Could not start main file")
+            print(f"Error ({name}): Could not start bot")
 
 
 if __name__ == "__main__":

@@ -78,7 +78,7 @@ if __name__ == "__main__":
     wait(2)
 
     iterate_directory()
-    wait(5)
+    wait(15)
 
     check_success()
     wait(0)

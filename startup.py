@@ -11,6 +11,13 @@ home = config.bot_directory
 main_file = config.main
 
 
+def loop():
+    while True:
+        txt = input("Input command:")
+        os.system(txt)
+        time.sleep(10)
+
+
 def wait(sec):
     txt = "" if sec == 0 else "----------------------------------"
     print(txt)
@@ -74,11 +81,15 @@ def check_success():
 
 
 if __name__ == "__main__":
-    kill_sessions()
-    wait(2)
+    if not config.pterodactyl:
+        kill_sessions()
+        wait(2)
 
     iterate_directory()
-    wait(15)
+    wait(20)
 
     check_success()
     wait(0)
+
+    if config.pterodactyl:
+        loop()
